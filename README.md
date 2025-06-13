@@ -1,93 +1,81 @@
-🧙‍♂️ Wizarding Realm
+# 🧙‍♂️ Wizarding Realm
 
-React Native mobile app that lets you sign in with Firebase Authentication and explore the Harry Potter universe via the open REST endpoint https://potterapi-fedeperin.vercel.app/es/characters.
+React Native **mobile app** that lets you **sign in with Firebase Authentication** and explore the **Harry Potter universe** via the open REST endpoint <https://potterapi-fedeperin.vercel.app/es/characters>.
 
-✨ Features
+---
 
-Area
+## ✨ Features
 
-What you get
+| Area | What you get |
+|------|--------------|
+| **Auth** | Email/Password & Google Sign‑In powered by Firebase Auth |
+| **Data** | Live list of characters from the Potter API, search & detail view |
+| **UX** | React Navigation (stack + tab), dark‑mode ready, pull‑to‑refresh |
+| **State** | Context API + hooks — no extra state library needed |
+| **Tooling** | ESLint + Prettier + TypeScript configured out of the box |
 
-Auth
+---
 
-Email/Password & Google Sign‑In powered by Firebase Auth
+## 🚀 Quick Start
 
-Data
+### 1 · Prerequisites
 
-Live list of characters from the Potter API, search & detail view
-
-UX
-
-React Navigation (stack + tab), dark‑mode ready, pull‑to‑refresh
-
-State
-
-Context API + hooks — no extra state library needed
-
-Tooling
-
-ESLint + Prettier + TypeScript configured out of the box
-
-🚀 Quick Start
-
-1 · Prerequisites
-
+```bash
 # Node & package manager
 node --version   # ≥ 18.x
 npm  --version   # v10 or yarn v1 classic
 
 # Expo (recommended) ‑ or install full React Native CLI
 npm install -g expo-cli
+```
 
-Android Studio (AVD) or Xcode (simulator) required for running on emulators if you are not using Expo Go.
+> **Android Studio** (AVD) or **Xcode** (simulator) required for running on emulators if you are not using Expo Go.
 
-2 · Clone & Install
+### 2 · Clone & Install
 
+```bash
 git clone https://github.com/YOUR_USER/wizarding-realm.git
 cd wizarding-realm
 npm install        # or yarn
+```
 
-3 · Configure Firebase
+### 3 · Configure Firebase
 
-Create a new project at https://console.firebase.google.com.
+1. Create a new project at <https://console.firebase.google.com>.
+2. **Enable Authentication ▶ Sign‑in Method** → Email/Password + Google.
+3. Register iOS & Android apps and download:
+   - `google-services.json` (Android)
+   - `GoogleService-Info.plist` (iOS)
+4. Place the files:
+   - `android/app/google-services.json`
+   - `ios/GoogleService-Info.plist`
+5. Copy your web config into **`src/config/firebase.ts`**:
+   ```ts
+   import { initializeApp } from 'firebase/app';
 
-Enable Authentication ▶ Sign‑in Method → Email/Password + Google.
+   const firebaseConfig = {
+     apiKey: 'YOUR_API_KEY',
+     authDomain: 'YOUR_PROJECT.firebaseapp.com',
+     projectId: 'YOUR_PROJECT_ID',
+     storageBucket: 'YOUR_PROJECT.appspot.com',
+     messagingSenderId: 'SENDER_ID',
+     appId: 'APP_ID',
+   };
 
-Register iOS & Android apps and download:
+   export const app = initializeApp(firebaseConfig);
+   ```
 
-google-services.json (Android)
+### 4 · Environment Variables
 
-GoogleService-Info.plist (iOS)
+Create a `.env` at project root:
 
-Place the files:
-
-android/app/google-services.json
-
-ios/GoogleService-Info.plist
-
-Copy your web config into src/config/firebase.ts:
-
-import { initializeApp } from 'firebase/app';
-
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_PROJECT.firebaseapp.com',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_PROJECT.appspot.com',
-  messagingSenderId: 'SENDER_ID',
-  appId: 'APP_ID',
-};
-
-export const app = initializeApp(firebaseConfig);
-
-4 · Environment Variables
-
-Create a .env at project root:
-
+```
 API_BASE=https://potterapi-fedeperin.vercel.app/es
+```
 
-5 · Run the app
+### 5 · Run the app
 
+```bash
 # Expo (cross‑platform, easiest)
 npx expo start
 
@@ -96,9 +84,13 @@ npx expo start
 npx react-native run-android
 # iOS (macOS only)
 npx react-native run-ios
+```
 
-🗂️ Project Structure
+---
 
+## 🗂️ Project Structure
+
+```
 wizarding-realm/
 ├── App.tsx               # Entry — registers Navigation & providers
 ├── .env
@@ -112,76 +104,82 @@ wizarding-realm/
     ├── services/
     │   └── api.ts        # Axios instance (reads API_BASE)
     └── types/            # TypeScript types & interfaces
+```
 
-🧙 API Cheat‑Sheet (Potter API)
+---
 
-Base URL: ${API_BASE} (https://potterapi-fedeperin.vercel.app/es)
+## 🧙 API Cheat‑Sheet (Potter API)
 
-Characters Endpoint: /characters
+- **Base URL:** `${API_BASE}` (`https://potterapi-fedeperin.vercel.app/es`)
+- **Characters Endpoint:** `/characters`
+- **Example call:**
+  ```ts
+  import api from '../services/api';
 
-Example call:
+  const { data: characters } = await api.get('/characters');
+  ```
+- **Sample response:**
+  ```json
+  [
+    {
+      "id": "5f26084764237b0022dd3535",
+      "name": "Harry Potter",
+      "house": "Gryffindor",
+      "species": "humano",
+      "patronus": "Ciervo",
+      ...
+    }
+  ]
+  ```
 
-import api from '../services/api';
+---
 
-const { data: characters } = await api.get('/characters');
+## 🔐 Firebase Auth Flow
 
-Sample response:
+1. User taps **Sign Up** → `createUserWithEmailAndPassword`.
+2. Session stored by Firebase; listener in `useAuth` hook hydrates context.
+3. Protected screens are wrapped in an **AuthStack** guard.
 
-[
-  {
-    "id": "5f26084764237b0022dd3535",
-    "name": "Harry Potter",
-    "house": "Gryffindor",
-    "species": "humano",
-    "patronus": "Ciervo",
-    ...
-  }
-]
+> For Google Sign‑In, this boilerplate uses **`expo-auth-session`** (if Expo) or `@react-native-google-signin/google-signin` (RN CLI).
 
-🔐 Firebase Auth Flow
+---
 
-User taps Sign Up → createUserWithEmailAndPassword.
+## 🧰 Useful Scripts
 
-Session stored by Firebase; listener in useAuth hook hydrates context.
+| Command | Purpose |
+|---------|---------|
+| `npm run start` | Expo dev server |
+| `npm run android` / `ios` | Run on specific platform (RN CLI) |
+| `npm run lint` | ESLint + Prettier check |
+| `npm run test` | Jest unit tests |
 
-Protected screens are wrapped in an AuthStack guard.
+---
 
-For Google Sign‑In, this boilerplate uses expo-auth-session (if Expo) or @react-native-google-signin/google-signin (RN CLI).
+## 🩹 Troubleshooting
 
-🧰 Useful Scripts
+- **`Firebase: Analytics is not supported`** → Ignore or wrap analytics init with `isSupported()`.
+- **Android build fails due to Play Services** → Ensure `google-services.json` in correct path & Gradle plugin v4+.
+- **Network request failed on physical device** → Check that device and dev PC are on same network; use HTTPS API URL.
 
-Command
+---
 
-Purpose
+## 🤝 Contributing
 
-npm run start
+1. Fork & create a branch: `git checkout -b feature/your-feature`  
+2. Commit & push: `git push origin feature/your-feature`  
+3. Open a Pull Request 🎉
 
-Expo dev server
+---
 
-npm run android / ios
+## © License
 
-Run on specific platform (RN CLI)
+MIT — free to use, modify & redistribute.
 
-npm run lint
+---
 
-ESLint + Prettier check
+### 📚 Resources
 
-npm run test
-
-Jest unit tests
-
-🩹 Troubleshooting
-
-Firebase: Analytics is not supported → Ignore or wrap analytics init with isSupported().
-
-Android build fails due to Play Services → Ensure google-services.json in correct path & Gradle plugin v4+.
-
-Network request failed on physical device → Check that device and dev PC are on same network; use HTTPS API URL.
-
-🤝 Contributing
-
-Fork & create a branch: git checkout -b feature/your-feature
-
-Commit & push: git push origin feature/your-feature
-
-Open a Pull Request 🎉
+- React Native Docs <https://reactnative.dev/docs/getting-started>
+- Expo Docs <https://docs.expo.dev/>
+- Firebase Web SDK <https://firebase.google.com/docs/web/setup>
+- Potter API Reference <https://potterapi-fedeperin.vercel.app>
