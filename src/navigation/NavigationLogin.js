@@ -8,9 +8,10 @@ import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 
 export default function NavigationLogin() {
-
-    <Stack.Navigator initialRouteName='NavigationLogin'>
+    return(
+    <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="Home" component={HomeScreen}/>
     </Stack.Navigator>
+    )
 }
