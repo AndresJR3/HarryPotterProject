@@ -1,116 +1,125 @@
-import { useNavigation } from "@react-navigation/native";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import React, { useEffect, useState } from "react";
-import { KeyboardAvoidingView, TextInput, TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { auth } from "../../firebase"
+import React from "react";
+import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "expo-router";
 
 const LoginScreen = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const router = useRouter();
 
-// Definimos state variables for email and password
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const navigation = useNavigation();
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (user) {
+        router.replace("/HomeScreenP");
+      }
+    });
+    return unsubscribe;
+  }, []);
 
-useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-            navigation.replace('Home'); // Redirige a Home si el usuario está autenticado
-        }
-    })
-        return () => unsubscribe();
-}, []);
+  const handleSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('Registered with: ', user.email);
+        router.replace("/HomeScreenP");
+      })
+      .catch(error => alert(error.message));
+  };
 
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('Logged in with: ', user.email);
+        router.replace("/HomeScreenP");
+      })
+      .catch(error => alert(error.message));
+  };
 
-// constante para el control del registro de un nuevo usuario
-    const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log('Registered with:', user.email);
-            })
-            .catch(error => alert(error.message));
-    }
-// constante para el control del inicio de sesion de un usuario
-    const handleLogin = () => {
-        signInWithEmailAndPassword(auth, email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log('Logged in with:', user.email);
-            })
-            .catch(error => alert(error.message));
-    }
-
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Email"
-                    value = { email }
-                    onChangeText = {text => setEmail(text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Password"
-                    secureTextEntry
-                    value = { password }
-                    onChangeText = {text => setPassword(text)}
-                    style={styles.input}
-                />
-            </View>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleSignUp} style={[styles.button, styles.buttonOutLine]}>
-                    <Text style={styles.buttonOutLineText}>Register</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
-    )
-}
-
+  return (
+  <KeyboardAvoidingView
+    style={styles.container}
+    behavior="padding"
+  >
+    <View style={styles.inputContainer}>
+    <TextInput
+      placeholder="Email"
+      value={email}
+      onChangeText={text => setEmail(text)}
+      style={styles.input}
+    />
+    <TextInput
+      placeholder="Password"
+      value={password}
+      onChangeText={text => setPassword(text)}
+      style={styles.input}
+      secureTextEntry
+    />
+    </View>
+    <View style={styles.buttonContainer}>
+    <TouchableOpacity
+      onPress={handleLogin}
+      style={styles.button}
+    >
+    <Text style={styles.buttonText}>Login</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      onPress={handleSignUp}
+      style={[styles.button, styles.buttonOutline]}
+    >
+      <Text style={styles.buttonOutlineText}>Register</Text>
+    </TouchableOpacity>
+    </View>
+  </KeyboardAvoidingView>
+  );
+};
 export default LoginScreen;
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    inputContainer: {
-        width: '80%',
-        marginBottom: 20,
-    },
-    input:{
-        backgroundColor: '#f0f0f0',
-        borderRadius: 10,
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        marginTop: 10,
-    },
-    buttonContainer:{
-        width: '60%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 40,
-    },
-    button:{
-        backgroundColor: '#007bff',
-        borderRadius: 10,
-        paddingVertical: 15,
-        width: '100%',
-        alignItems: 'center',
-    },
-    buttonOutLine:{
-        backgroundColor: '#fff',
-        marginTop: 5,
-        borderColor: '#007bff',
-        borderWidth: 2,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '700',
-    }
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    width: '80%',
+  },
+  input: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+  },
+  buttonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
+  },
+  button: {
+    backgroundColor: '#0782F9',
+    width: '100%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonOutline: {
+    backgroundColor: 'white',
+    marginTop: 5,
+    borderColor: '#0782F9',
+    borderWidth: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  buttonOutlineText: {
+    color: '#0782F9',
+    fontWeight: '700',
+    fontSize: 16,
+  },
 });
