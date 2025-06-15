@@ -39,40 +39,47 @@ const LoginScreen = () => {
   };
 
   return (
-  <KeyboardAvoidingView
-    style={styles.container}
-    behavior="padding"
-  >
-    <View style={styles.inputContainer}>
-    <TextInput
-      placeholder="Email"
-      value={email}
-      onChangeText={text => setEmail(text)}
-      style={styles.input}
-    />
-    <TextInput
-      placeholder="Password"
-      value={password}
-      onChangeText={text => setPassword(text)}
-      style={styles.input}
-      secureTextEntry
-    />
-    </View>
-    <View style={styles.buttonContainer}>
-    <TouchableOpacity
-      onPress={handleLogin}
-      style={styles.button}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
     >
-    <Text style={styles.buttonText}>Login</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      onPress={handleSignUp}
-      style={[styles.button, styles.buttonOutline]}
-    >
-      <Text style={styles.buttonOutlineText}>Register</Text>
-    </TouchableOpacity>
-    </View>
-  </KeyboardAvoidingView>
+      <Text style={styles.title}>Bienvenido Mago!!</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          placeholder="Email"
+          placeholderTextColor="#A0A3B1"
+          value={email}
+          onChangeText={text => setEmail(text)}
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text style={styles.label}>Contraseña</Text>
+        <TextInput
+          placeholder="Contraseña"
+          placeholderTextColor="#A0A3B1"
+          value={password}
+          onChangeText={text => setPassword(text)}
+          style={styles.input}
+          secureTextEntry
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={handleLogin}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSignUp}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.buttonOutlineText}>Registrarse</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 export default LoginScreen;
@@ -80,46 +87,75 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#181A20",
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#F5F5F7",
+    marginBottom: 36,
+    letterSpacing: 1,
+    textAlign: "center",
   },
   inputContainer: {
-    width: '80%',
+    width: '90%',
+    marginBottom: 24,
+  },
+  label: {
+    color: "#A0A3B1",
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 2,
+    marginLeft: 4,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: "#23242B",
+    color: "#F5F5F7",
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 10,
-    marginTop: 5,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#2C2E36",
+    fontSize: 16,
   },
   buttonContainer: {
-    width: '60%',
+    width: '80%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 16,
   },
   button: {
-    backgroundColor: '#0782F9',
+    backgroundColor: "#4F8EF7",
     width: '100%',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
-  },
-  buttonOutline: {
-    backgroundColor: 'white',
-    marginTop: 5,
-    borderColor: '#0782F9',
-    borderWidth: 2,
+    marginVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 4,
+    elevation: 2,
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '700',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
+    letterSpacing: 1,
+  },
+  buttonOutline: {
+    backgroundColor: "#444654",
+    borderColor: "#4F8EF7",
+    borderWidth: 2,
   },
   buttonOutlineText: {
-    color: '#0782F9',
-    fontWeight: '700',
+    color: "#F5F5F7",
+    fontWeight: "bold",
     fontSize: 16,
+    letterSpacing: 1,
   },
 });

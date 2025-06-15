@@ -1,29 +1,33 @@
 import React, { useState } from "react";
-import { View, Text, Image, Button, StyleSheet, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { auth, firestore } from "../../firebase";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, getDoc } from "firebase/firestore";
+import ButtonPrimary from "../components/ButtonPrimary";
 
 export default function DetailsNewCharacterScreen({ route, navigation }) {
-  const { character, refresh } = route.params;
-  const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({ ...character });
+  const { character: initialCharacter, refresh } = route.params;
+  const [character, setCharacter] = useState(initialCharacter);
 
-  const handleUpdate = async () => {
+  // Refresca los datos del personaje desde Firestore
+  const fetchCharacter = async () => {
     try {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
-      await updateDoc(
-        doc(firestore, "users", userId, "characters", character.id),
-        {
-          ...form,
-          children: form.children ? (Array.isArray(form.children) ? form.children : form.children.split(",").map(c => c.trim())) : [],
-        }
-      );
-      Alert.alert("Personaje actualizado");
-      setEditMode(false);
-      if (refresh) refresh();
+      const docRef = doc(firestore, "users", userId, "characters", character.id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setCharacter({ ...docSnap.data(), id: character.id, type: "firebase" });
+      }
     } catch (e) {
-      Alert.alert("Error al actualizar", e.message);
+      // Puedes manejar el error si lo deseas
     }
   };
 
@@ -35,136 +39,123 @@ export default function DetailsNewCharacterScreen({ route, navigation }) {
       Alert.alert("Personaje eliminado");
       if (refresh) refresh();
       navigation.goBack();
-    } catch (e) {
-      Alert.alert("Error al eliminar", e.message);
+    } catch (error) {
+      Alert.alert("Error al eliminar", error.message);
     }
   };
 
+  // Cuando regresas de editar, refresca el personaje
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", fetchCharacter);
+    return unsubscribe;
+  }, [navigation]);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Image source={{ uri: form.image }} style={styles.image} />
-        {editMode ? (
+        <Image
+          source={{ uri: character.image }}
+          style={styles.image}
+        />
+        <Text style={styles.title}>{character.fullName || character.name}</Text>
+        <Text style={styles.info}>Apodo: <Text style={styles.infoValue}>{character.nickname || "N/A"}</Text></Text>
+        <Text style={styles.info}>Casa: <Text style={styles.infoValue}>{character.hogwartsHouse || "Desconocida"}</Text></Text>
+        <Text style={styles.info}>Actor: <Text style={styles.infoValue}>{character.interpretedBy || "N/A"}</Text></Text>
+        <Text style={styles.info}>Fecha de nacimiento: <Text style={styles.infoValue}>{character.birthdate || "N/A"}</Text></Text>
+
+        {character.children && character.children.length > 0 && (
           <>
-            <TextInput
-              style={styles.input}
-              value={form.fullName}
-              onChangeText={text => setForm(f => ({ ...f, fullName: text }))}
-              placeholder="Nombre completo"
-            />
-            <TextInput
-              style={styles.input}
-              value={form.nickname}
-              onChangeText={text => setForm(f => ({ ...f, nickname: text }))}
-              placeholder="Apodo"
-            />
-            <TextInput
-              style={styles.input}
-              value={form.hogwartsHouse}
-              onChangeText={text => setForm(f => ({ ...f, hogwartsHouse: text }))}
-              placeholder="Casa de Hogwarts"
-            />
-            <TextInput
-              style={styles.input}
-              value={form.interpretedBy}
-              onChangeText={text => setForm(f => ({ ...f, interpretedBy: text }))}
-              placeholder="Actor"
-            />
-            <TextInput
-              style={styles.input}
-              value={Array.isArray(form.children) ? form.children.join(", ") : form.children}
-              onChangeText={text => setForm(f => ({ ...f, children: text }))}
-              placeholder="Hijos (separados por coma)"
-            />
-            <TextInput
-              style={styles.input}
-              value={form.image}
-              onChangeText={text => setForm(f => ({ ...f, image: text }))}
-              placeholder="URL de imagen"
-            />
-            <TextInput
-              style={styles.input}
-              value={form.birthdate}
-              onChangeText={text => setForm(f => ({ ...f, birthdate: text }))}
-              placeholder="Fecha de nacimiento"
-            />
-            <Button title="Guardar cambios" onPress={handleUpdate} />
-            <Button title="Cancelar" color="grey" onPress={() => setEditMode(false)} />
-          </>
-        ) : (
-          <>
-            <Text style={styles.title}>{form.fullName}</Text>
-            <Text style={styles.info}>Apodo: {form.nickname || "N/A"}</Text>
-            <Text style={styles.info}>Casa: {form.hogwartsHouse || "Desconocida"}</Text>
-            <Text style={styles.info}>Actor: {form.interpretedBy || "N/A"}</Text>
-            <Text style={styles.info}>Fecha de nacimiento: {form.birthdate || "N/A"}</Text>
-            {form.children && form.children.length > 0 && (
-              <>
-                <Text style={styles.subTitle}>Hijos:</Text>
-                {(Array.isArray(form.children) ? form.children : form.children.split(",")).map((child, index) => (
-                  <Text key={index} style={styles.childItem}>• {child}</Text>
-                ))}
-              </>
-            )}
-            <Button title="Editar" onPress={() => navigation.navigate("UpdateCharacterScreen", { character: form })} />
-            <Button title="Eliminar" color="red" onPress={handleDelete} />
+            <Text style={styles.subTitle}>Hijos:</Text>
+            {(Array.isArray(character.children) ? character.children : character.children.split(",")).map((child, index) => (
+              <Text key={index} style={styles.childItem}>• {child}</Text>
+            ))}
           </>
         )}
-        <Button title="Volver" onPress={() => navigation.goBack()} />
+
+        <View style={{ marginTop: 24, width: "100%" }}>
+          <ButtonPrimary
+            title="Editar Personaje"
+            onPress={() =>
+              navigation.navigate("UpdateCharacterScreen", {
+                character,
+                refresh: fetchCharacter,
+              })
+            }
+          />
+          <ButtonPrimary
+            title="Eliminar Personaje"
+            color="#FF4C4C"
+            onPress={() =>
+              Alert.alert(
+                "Confirmar",
+                "¿Estás seguro de que quieres eliminar este personaje?",
+                [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Eliminar", style: "destructive", onPress: handleDelete },
+                ]
+              )
+            }
+          />
+          <ButtonPrimary
+            title="Volver"
+            color="#444654"
+            onPress={() => navigation.goBack()}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#181A20",
   },
   scrollContainer: {
     alignItems: "center",
-    padding: 20,
+    padding: 24,
+    backgroundColor: "#181A20",
   },
   image: {
-    width: "80%",
-    height: 300,
-    marginBottom: 20,
-    resizeMode: "contain",
-    borderRadius: 10,
+    width: 160,
+    height: 200,
+    marginBottom: 24,
+    resizeMode: "cover",
+    borderRadius: 18,
+    backgroundColor: "#23242B",
+    alignSelf: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
-    color: "#333",
+    marginBottom: 16,
+    color: "#F5F5F7",
+    letterSpacing: 0.5,
+    marginTop: 12,
   },
   info: {
-    fontSize: 16,
+    fontSize: 17,
     marginBottom: 8,
-    color: "#444",
+    color: "#A0A3B1",
     textAlign: "center",
   },
+  infoValue: {
+    color: "#F5F5F7",
+    fontWeight: "600",
+  },
   subTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginTop: 15,
-    marginBottom: 5,
-    color: "#222",
+    marginTop: 18,
+    marginBottom: 7,
+    color: "#4F8EF7",
     textAlign: "center",
   },
   childItem: {
-    fontSize: 15,
-    color: "#555",
+    fontSize: 16,
+    color: "#F5F5F7",
     textAlign: "center",
-  },
-  input: {
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    width: "100%",
   },
 });

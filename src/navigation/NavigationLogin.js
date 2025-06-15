@@ -7,19 +7,28 @@ import CreateCharacterScreen from '../screens/CreateCharacterScreen';
 import DetailsNewCharacterScreen from '../screens/DetailsNewCharacterScreen';
 import UpdateCharacterScreen from '../screens/UpdateCharacterScreen';
 
-
+// CRUD Hechizos
+import SpellsScreen from '../screens/SpellsScreen';
+import CreateSpellScreen from '../screens/CreateSpellScreen';
+import SpellDetailScreen from '../screens/SpellDetailScreen';
+import UpdateSpellScreen from '../screens/UpdateSpellScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function NavigationLogin() {
     return(
     <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} headerShown={false}/>
-        <Stack.Screen name="Home" component={HomeScreen} headerShown={false}/>
-        <Stack.Screen name="DetailsScreenCharacter" component={DetailsScreenCharacter} headerShown={false}/>
-        <Stack.Screen name="CreateCharacter" component={CreateCharacterScreen} headerShown={false}/>
-        <Stack.Screen name="DetailsNewCharacter" component={DetailsNewCharacterScreen} headerShown={false}/>
-        <Stack.Screen name="UpdateCharacterScreen" component={UpdateCharacterScreen} headerShown={false}/>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="DetailsScreenCharacter" component={DetailsScreenCharacter} options={{ headerShown: false }}/>
+        <Stack.Screen name="CreateCharacter" component={CreateCharacterScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="DetailsNewCharacterScreen" component={DetailsNewCharacterScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="UpdateCharacterScreen" component={UpdateCharacterScreen} options={{ headerShown: false }}/>
+        {/* Hechizos */}
+        <Stack.Screen name="SpellsScreen" component={SpellsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateSpellScreen" component={CreateSpellScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SpellDetailScreen" component={SpellDetailScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="UpdateSpellScreen" component={UpdateSpellScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
     )
 }

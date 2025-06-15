@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { auth, firestore } from "../../firebase";
@@ -8,12 +8,12 @@ const SEPARATOR_ID = "__separator__";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [generalList, setGeneralList] = React.useState([]);
-  const [error, setError] = React.useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [generalList, setGeneralList] = useState([]);
+  const [error, setError] = useState(null);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       getCharacters();
     }, [])
   );
@@ -32,14 +32,18 @@ const HomeScreen = () => {
       let localCharacters = [];
       if (userId) {
         const querySnapshot = await getDocs(collection(firestore, "users", userId, "characters"));
-        localCharacters = querySnapshot.docs.map(doc => doc.data());
+        localCharacters = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+          type: "firebase",
+        }));
       }
 
       // Combina en una sola lista con separador
       let combined = [...apiData];
       if (localCharacters.length > 0) {
         combined.push({ id: SEPARATOR_ID, type: "separator" });
-        combined = combined.concat(localCharacters.map(c => ({ ...c, type: "firebase" })));
+        combined = combined.concat(localCharacters);
       }
       setGeneralList(combined);
       setIsLoading(false);
@@ -59,7 +63,7 @@ const HomeScreen = () => {
       return (
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('DetailsNewCharacter', { character: item, refresh: getCharacters })}
+          onPress={() => navigation.navigate('DetailsNewCharacterScreen', { character: item, refresh: getCharacters })}
         >
           <Image source={{ uri: item.image }} style={styles.image} />
           <Text style={styles.title}>{item.fullName}</Text>
@@ -118,6 +122,9 @@ const HomeScreen = () => {
       <TouchableOpacity onPress={() => navigation.navigate('CreateCharacter')} style={styles.button}>
         <Text style={styles.buttonText}>Crear Personaje</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('SpellsScreen')} style={styles.button}>
+        <Text style={styles.buttonText}>Ver Hechizos</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={handleSignOut}
         style={styles.button}>
@@ -132,87 +139,100 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#181A20",
     padding: 10,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#333",
+    color: "#F5F5F7",
+    letterSpacing: 1,
   },
   listContainer: {
     paddingBottom: 20,
   },
   card: {
-    marginBottom: 20,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10,
+    marginBottom: 18,
+    backgroundColor: "#23242B",
+    borderRadius: 16,
     overflow: "hidden",
-    borderColor: "#ddd",
+    borderColor: "#2C2E36",
     borderWidth: 1,
-    elevation: 2,
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   image: {
-    width: "100%",
-    height: 200,
-    resizeMode: "contain",
-    backgroundColor: "#fff",
+  width: 160,
+  height: 200,
+  borderRadius: 18,
+  backgroundColor: "#23242B",
+  alignSelf: "center",
+  marginTop: 16,
+  marginBottom: 8,
+  resizeMode: "cover",
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    padding: 15,
+    padding: 16,
     textAlign: "center",
-    color: "#333",
+    color: "#F5F5F7",
+    letterSpacing: 0.5,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#181A20",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: "#666",
+    color: "#A0A3B1",
   },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#181A20",
     padding: 20,
   },
   errorText: {
-    color: "red",
+    color: "#FF4C4C",
     fontSize: 18,
     textAlign: "center",
   },
   button: {
-    backgroundColor: "#007bff",
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: "#4F8EF7",
+    padding: 16,
+    borderRadius: 12,
     marginTop: 10,
     marginHorizontal: 20,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",
+    letterSpacing: 1,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginTop: 20,
     marginBottom: 10,
     textAlign: "center",
-    color: "#007bff",
+    color: "#4F8EF7",
+    letterSpacing: 0.5,
   },
 });
