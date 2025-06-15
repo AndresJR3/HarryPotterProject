@@ -1,2 +1,9 @@
 npm install firebase@11.9.1 --save4
 npm install react-native-uuid
+npm install prop-types	
+npm install @react-navigation/native
+npm install @react-navigation/native-stack
+npm install @react-navigation/bottom-tabs
+npm install react-native-get-random-values
+npm install @react-native-async-storage/async-storage
+npm install expo-linear-gradient

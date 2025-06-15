@@ -85,8 +85,14 @@ const HomeScreen = () => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.loadingText}>Cargando personajes...</Text>
+        <Text style={styles.loadingTitle}>🪄 Cargando Magia... 🪄</Text>
+        <ActivityIndicator size="large" color="#FFD700" />
+        <Text style={styles.loadingText}>Los retratos están despertando...</Text>
+        <View style={styles.sparkles}>
+          <Text style={styles.sparkle}>✨</Text>
+          <Text style={styles.sparkle}>⭐</Text>
+          <Text style={styles.sparkle}>✨</Text>
+        </View>
       </View>
     );
   }
@@ -110,7 +116,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerTitle}>Harry Potter's characters</Text>
+      <Text style={styles.headerTitle}>🏰 MAGOS DE HOGWARTS 🏰</Text>
       <FlatList
         data={generalList}
         renderItem={renderItem}
@@ -130,6 +136,12 @@ const HomeScreen = () => {
         style={styles.button}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
+      <View style={styles.floatingElements}>
+          <Text style={[styles.floatingElement, styles.element1]}>🦉</Text>
+          <Text style={[styles.floatingElement, styles.element2]}>⚡</Text>
+          <Text style={[styles.floatingElement, styles.element3]}>🔮</Text>
+          <Text style={[styles.floatingElement, styles.element4]}>✨</Text>
+        </View>
     </SafeAreaView>
   );
 };
@@ -139,32 +151,38 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#181A20",
-    padding: 10,
+    backgroundColor: "#0a0e27",
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#F5F5F7",
+    color: "#FFD700", // dorado mágico
     letterSpacing: 1,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 5,
+    borderBottomWidth: 2,
+    borderBottomColor: "#FFD700",
+    paddingBottom: 8,
   },
   listContainer: {
     paddingBottom: 20,
   },
   card: {
     marginBottom: 18,
-    backgroundColor: "#23242B",
-    borderRadius: 16,
+    backgroundColor: "#2D2E35",
+    borderRadius: 18,
     overflow: "hidden",
-    borderColor: "#2C2E36",
     borderWidth: 1,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    borderColor: "#444",
+    elevation: 4,
+    shadowColor: "#F5DEB3",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    marginHorizontal: 8,
   },
   image: {
   width: 160,
@@ -172,28 +190,51 @@ const styles = StyleSheet.create({
   borderRadius: 18,
   backgroundColor: "#23242B",
   alignSelf: "center",
-  marginTop: 16,
-  marginBottom: 8,
+  marginTop: 8,
+  marginBottom: 5,
   resizeMode: "cover",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    padding: 16,
     textAlign: "center",
-    color: "#F5F5F7",
-    letterSpacing: 0.5,
+    color: "#FFD700",
+    letterSpacing: 1,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+    marginBottom: 8,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#181A20",
+    backgroundColor: "#0a0e27",
+    padding: 30,
+  },
+   loadingTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: "#FFD700",
+    marginBottom: 20,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
     color: "#A0A3B1",
+  },
+   sparkles: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  sparkle: {
+    fontSize: 20,
+    color: '#FFD700',
+    marginHorizontal: 10,
   },
   errorContainer: {
     flex: 1,
@@ -202,37 +243,72 @@ const styles = StyleSheet.create({
     backgroundColor: "#181A20",
     padding: 20,
   },
+  floatingElements: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: 'none',
+  },
+  floatingElement: {
+    position: 'absolute',
+    fontSize: 22,
+    opacity: 0.6,
+  },
   errorText: {
     color: "#FF4C4C",
     fontSize: 18,
     textAlign: "center",
   },
   button: {
-    backgroundColor: "#4F8EF7",
-    padding: 16,
+    backgroundColor: "#7A5CFA", // color mágico púrpura
+    padding: 14,
     borderRadius: 12,
     marginTop: 10,
     marginHorizontal: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 3,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
     letterSpacing: 1,
   },
-  sectionTitle: {
+   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 10,
     textAlign: "center",
-    color: "#4F8EF7",
-    letterSpacing: 0.5,
+    color: "#9A84FF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#9A84FF",
+    letterSpacing: 1,
+  },
+   element1: {
+    top: '15%',
+    left: '5%',
+    color: '#FFD700',
+  },
+  element2: {
+    top: '30%',
+    right: '8%',
+    color: '#FFD700',
+  },
+  element3: {
+    bottom: '35%',
+    left: '7%',
+    color: '#DDA0DD',
+  },
+  element4: {
+    bottom: '20%',
+    right: '10%',
+    color: '#87CEEB',
   },
 });

@@ -24,7 +24,6 @@ export default function NavigationLogin() {
         <Stack.Screen name="CreateCharacter" component={CreateCharacterScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="DetailsNewCharacterScreen" component={DetailsNewCharacterScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="UpdateCharacterScreen" component={UpdateCharacterScreen} options={{ headerShown: false }}/>
-        {/* Hechizos */}
         <Stack.Screen name="SpellsScreen" component={SpellsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CreateSpellScreen" component={CreateSpellScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SpellDetailScreen" component={SpellDetailScreen} options={{ headerShown: false }} />
