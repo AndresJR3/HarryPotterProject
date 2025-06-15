@@ -143,54 +143,6 @@ npx react-native run-ios
 
 ---
 
-## 🗂️ Project Structure
-
-```
-wizarding-realm/
-├── App.tsx               # Entry — registers Navigation & providers
-├── .env
-└── src/
-    ├── components/       # Reusable UI widgets (Button, Card, etc.)
-    ├── screens/          # AuthScreen, CharactersScreen, DetailScreen
-    ├── navigation/       # Stack & Tab navigators
-    ├── hooks/            # useAuth, useCharacters
-    ├── config/
-    │   └── firebase.ts   # 🔑 Firebase initialization
-    ├── services/
-    │   └── api.ts        # Axios instance (reads API_BASE)
-    └── types/            # TypeScript types & interfaces
-```
-
----
-
-## 🧙 API Cheat‑Sheet (Potter API)
-
-* **Base URL:** `${API_BASE}` (`https://potterapi-fedeperin.vercel.app/es`)
-* **Characters Endpoint:** `/characters`
-* **Example call:**
-
-  ```ts
-  import api from '../services/api';
-
-  const { data: characters } = await api.get('/characters');
-  ```
-* **Sample response:**
-
-  ```json
-  [
-    {
-      "id": "5f26084764237b0022dd3535",
-      "name": "Harry Potter",
-      "house": "Gryffindor",
-      "species": "humano",
-      "patronus": "Ciervo",
-      ...
-    }
-  ]
-  ```
-
----
-
 ## 🔐 Firebase Auth Flow
 
 1. User taps **Sign Up** → `createUserWithEmailAndPassword`.
