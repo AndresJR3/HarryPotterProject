@@ -1,0 +1,2 @@
+npm install firebase@11.9.1 --save4
+npm install react-native-uuid

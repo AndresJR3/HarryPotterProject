@@ -2,17 +2,17 @@ import React from "react";
 import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import { auth } from "../../firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native"; 
 
 const LoginScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const router = useRouter();
+  const navigation = useNavigation(); 
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
-        router.replace("/HomeScreenP");
+        navigation.replace("Home"); 
       }
     });
     return unsubscribe;
@@ -23,7 +23,7 @@ const LoginScreen = () => {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Registered with: ', user.email);
-        router.replace("/HomeScreenP");
+        navigation.replace("Home"); 
       })
       .catch(error => alert(error.message));
   };
@@ -33,7 +33,7 @@ const LoginScreen = () => {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with: ', user.email);
-        router.replace("/HomeScreenP");
+        navigation.replace("Home"); 
       })
       .catch(error => alert(error.message));
   };
