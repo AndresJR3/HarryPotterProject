@@ -31,17 +31,14 @@ export default function NavigationLogin() {
     }
 
     return (
-    <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="DetailsScreenCharacter" component={DetailsScreenCharacter} options={{ headerShown: false }}/>
-        <Stack.Screen name="CreateCharacter" component={CreateCharacterScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="DetailsNewCharacterScreen" component={DetailsNewCharacterScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="UpdateCharacterScreen" component={UpdateCharacterScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="SpellsScreen" component={SpellsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateSpellScreen" component={CreateSpellScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SpellDetailScreen" component={SpellDetailScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="UpdateSpellScreen" component={UpdateSpellScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
+        <Stack.Navigator>
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="DetailsScreenCharacter" component={DetailsScreenCharacter} options={{ headerShown: false }}/>
+            <Stack.Screen name="CreateCharacter" component={CreateCharacterScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="DetailsNewCharacterScreen" component={DetailsNewCharacterScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="UpdateCharacterScreen" component={UpdateCharacterScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="SpellsTab" component={SpellsTabNavigator} options={{ headerShown: false }}/>
+        </Stack.Navigator>
     )
 }

@@ -128,7 +128,7 @@ const HomeScreen = () => {
       <TouchableOpacity onPress={() => navigation.navigate('CreateCharacter')} style={styles.button}>
         <Text style={styles.buttonText}>Crear Personaje</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('SpellsScreen')} style={styles.button}>
+      <TouchableOpacity onPress={() => navigation.navigate('SpellsTab')} style={styles.button}>
         <Text style={styles.buttonText}>Ver Hechizos</Text>
       </TouchableOpacity>
       <TouchableOpacity

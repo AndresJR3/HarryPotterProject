@@ -5,7 +5,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ButtonPrimary from "../components/ButtonPrimary";
 
-
 export default function SpellsScreen() {
   const [spells, setSpells] = useState([]);
   const navigation = useNavigation();
@@ -23,41 +22,43 @@ export default function SpellsScreen() {
     }, [])
   );
 
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.spellCard}
+      onPress={() => navigation.navigate("SpellDetailScreen", { spell: item, refresh: fetchSpells })}
+    >
+      <Text style={styles.spellName}>{item.name}</Text>
+      <Text style={styles.spellDesc}>{item.description}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Mis Hechizos</Text>
-        <FlatList
-          data={spells}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.spellCard}
-              onPress={() => navigation.navigate("SpellDetailScreen", { spell: item, refresh: fetchSpells })}
-            >
-              <Text style={styles.spellName}>{item.name}</Text>
-              <Text style={styles.spellDesc}>{item.description}</Text>
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={<Text style={{ textAlign: "center", color: "#6B7280" }}>No hay hechizos.</Text>}
-        />
-        <ButtonPrimary
-          title="Agregar Hechizo"
-          onPress={() => navigation.navigate("CreateSpellScreen", { refresh: fetchSpells })}
-        />
-        <ButtonPrimary
-          title="Volver"
-          color="#6B7280"
-          onPress={() => navigation.goBack()}
-        />        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.spellCard}
-            onPress={() => navigation.navigate("SpellDetailScreen", { spell: item, refresh: fetchSpells })}
-          >
-            <Text style={styles.spellName}>{item.name}</Text>
-            <Text style={styles.spellDesc}>{item.description}</Text>
-          </TouchableOpacity>
-        )}
+      <Text style={styles.header}>✨ Hechizos de Hogwarts ✨</Text>
+      <FlatList
+        data={spells}
+        keyExtractor={item => item.id}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No hay hechizos.</Text>
+        }
+      />
+      <ButtonPrimary
+        title="Agregar Hechizo"
+        onPress={() => navigation.navigate("CreateSpellScreen", { refresh: fetchSpells })}
+      />
+      <ButtonPrimary
+        title="Volver"
+        color="#6B7280"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.floatingElements}>
+        <Text style={[styles.floatingElement, styles.element1]}>🪄</Text>
+        <Text style={[styles.floatingElement, styles.element2]}>✨</Text>
+        <Text style={[styles.floatingElement, styles.element3]}>🔮</Text>
+        <Text style={[styles.floatingElement, styles.element4]}>⭐</Text>
       </View>
     </SafeAreaView>
   );
@@ -66,41 +67,97 @@ export default function SpellsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#181A20",
+    backgroundColor: "#0a0e27",
   },
-  container: { flex: 1, padding: 20 },
   header: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
-    marginTop: 24,
-    marginBottom: 20,
-    color: "#F5F5F7",
-    letterSpacing: 0.5,
     textAlign: "center",
+    marginVertical: 20,
+    color: "#FFD700",
+    letterSpacing: 1,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 5,
+    borderBottomWidth: 2,
+    borderBottomColor: "#FFD700",
+    paddingBottom: 8,
+    marginBottom: 16,
+  },
+  listContainer: {
+    paddingBottom: 20,
+    paddingHorizontal: 8,
   },
   spellCard: {
-    padding: 18,
-    backgroundColor: "#23242B",
-    borderRadius: 14,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: 18,
+    backgroundColor: "#2D2E35",
+    borderRadius: 18,
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#2C2E36",
+    borderColor: "#444",
+    elevation: 4,
+    shadowColor: "#F5DEB3",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    marginHorizontal: 8,
+    padding: 18,
+    alignItems: "center",
   },
   spellName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "#F5F5F7",
-    marginBottom: 4,
+    color: "#FFD700",
+    letterSpacing: 1,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+    marginBottom: 6,
     textAlign: "center",
   },
   spellDesc: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#A0A3B1",
     textAlign: "center",
+    marginBottom: 2,
+  },
+  emptyText: {
+    textAlign: "center",
+    color: "#888",
+    fontSize: 16,
+    marginTop: 20,
+  },
+  floatingElements: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: 'none',
+  },
+  floatingElement: {
+    position: 'absolute',
+    fontSize: 22,
+    opacity: 0.6,
+  },
+  element1: {
+    top: '15%',
+    left: '5%',
+    color: '#FFD700',
+  },
+  element2: {
+    top: '30%',
+    right: '8%',
+    color: '#FFD700',
+  },
+  element3: {
+    bottom: '35%',
+    left: '7%',
+    color: '#DDA0DD',
+  },
+  element4: {
+    bottom: '20%',
+    right: '10%',
+    color: '#87CEEB',
   },
 });
