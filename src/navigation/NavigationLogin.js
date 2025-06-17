@@ -12,11 +12,25 @@ import SpellsScreen from '../screens/SpellsScreen';
 import CreateSpellScreen from '../screens/CreateSpellScreen';
 import SpellDetailScreen from '../screens/SpellDetailScreen';
 import UpdateSpellScreen from '../screens/UpdateSpellScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Stack = createNativeStackNavigator();
 
 export default function NavigationLogin() {
-    return(
+    const Tab = createBottomTabNavigator();
+
+    function SpellsTabNavigator() {
+        return (
+            <Tab.Navigator screenOptions={{ headerShown: false }}>
+                <Tab.Screen name="SpellsScreen" component={SpellsScreen} />
+                <Tab.Screen name="CreateSpellScreen" component={CreateSpellScreen} />
+                <Tab.Screen name="SpellDetailScreen" component={SpellDetailScreen} />
+                <Tab.Screen name="UpdateSpellScreen" component={UpdateSpellScreen} />
+            </Tab.Navigator>
+        );
+    }
+
+    return (
     <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
